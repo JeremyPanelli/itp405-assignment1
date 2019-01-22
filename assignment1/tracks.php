@@ -1,7 +1,7 @@
 <?php
     $pdo = new PDO('sqlite:chinook.db');
     $sql = "
-      SELECT  genres.Name, tracks.Name AS trackname, albums.Title AS albumtitle, artists.Name AS artistname, tracks.UnitPrice AS unitprice
+      SELECT  genres.Name As genre, tracks.Name AS trackname, albums.Title AS albumtitle, artists.Name AS artistname, tracks.UnitPrice AS unitprice
       FROM genres
       INNER JOIN tracks
       ON genres.GenreID = tracks.GenreId
@@ -10,12 +10,12 @@
       INNER JOIN artists
       ON  artists.ArtistId = albums.ArtistId
     ";
-    if (isset($_GET['genres.name'])) {
-      $sql = $sql . 'WHERE genres.Name = ?';
+    if (isset($_GET['genre'])) {
+      $sql = $sql . 'WHERE genre = ?';
     }
     $statement = $pdo->prepare($sql);
-    if (isset($_GET['genres.name'])) {
-      $statement->bindParam(1,$_GET['genres.name']);
+    if (isset($_GET['genre'])) {
+      $statement->bindParam(1,$_GET['genre']);
     }
     $statement->execute();
     $genres = $statement->fetchAll(PDO::FETCH_OBJ);
@@ -31,8 +31,12 @@
 <body>
   <button>  <a href="/"> ← </a> </button> <br>
 <h1>
-<?php if (isset($_GET['genres.name'])) { ?>
-<?php print_r($_GET['genres.name']);} else{ echo "All Genres";} ?>
+<?php if (isset($_GET['genre'])) {
+   print_r($_GET['genre']);
+ }
+ else{
+    echo "All Genres";}
+  ?>
 </h1>
   <table class="table">
     <tr>
